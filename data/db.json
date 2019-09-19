@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "name": "Admin",
+      "passwordHash": "$2b$10$0oAqgU/6WPyvypH673aZb.ijP8ZhcTnWy0nHQJiFqNrUqU614QszO",
+      "postIDs": [
+        "6ea39710-daa3-11e9-b903-938205f47b8c",
+        "9c867520-daa4-11e9-9678-69f4a1c07fc4",
+        "a3cc2eb0-daa4-11e9-9678-69f4a1c07fc4"
+      ],
+      "joinTime": 1568609177293
+    },
+    {
+      "username": "bwh",
+      "passwordHash": "$2b$10$T8BrBvj64M1vHc0pLnTGte5thQrG6.j9mvwI5tnJPrIRDYRon9mB6",
+      "name": "Benjamin Hetherington",
+      "postIDs": [],
+      "joinTime": 1568873665269
+    }
+  ],
+  "posts": {
+    "9c867520-daa4-11e9-9678-69f4a1c07fc4": {
+      "author": "admin",
+      "title": "New Post",
+      "content": "This is the new content of the post.",
+      "id": "9c867520-daa4-11e9-9678-69f4a1c07fc4",
+      "time": 1568873614706
+    }
+  }
+}

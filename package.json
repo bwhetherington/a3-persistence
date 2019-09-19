@@ -1,0 +1,54 @@
+{
+  "name": "a3-persistence",
+  "version": "1.0.0",
+  "description": "Assignment 3 - Persistence: Two-tier Web Application with Flat File Database, Express server, and CSS template ===",
+  "main": "index.js",
+  "scripts": {
+    "sign": "openssl req -nodes -new -x509 -keyout server.key -out server.cert",
+    "wipe-state": "rm data/db.json",
+    "build": "parcel build client/index.html",
+    "watch": "parcel watch client/index.html",
+    "start": "node server/loader.js",
+    "clean": "rm -f dist/*",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bwhetherington/a3-persistence.git"
+  },
+  "keywords": [],
+  "author": "Benjamin Hetherington <b.w.hetherington@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bwhetherington/a3-persistence/issues"
+  },
+  "homepage": "https://github.com/bwhetherington/a3-persistence#readme",
+  "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
+    "parcel-bundler": "^1.12.3"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "formik": "^1.5.8",
+    "lowdb": "^1.0.0",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "react": "^16.9.0",
+    "react-bootstrap": "^1.0.0-beta.12",
+    "react-dom": "^16.9.0",
+    "react-router": "^5.0.1",
+    "react-router-dom": "^5.0.1",
+    "uuid": "^3.3.3",
+    "yup": "^0.27.0"
+  }
+}
