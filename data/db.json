@@ -3,29 +3,36 @@
     {
       "username": "admin",
       "name": "Admin",
-      "passwordHash": "$2b$10$0oAqgU/6WPyvypH673aZb.ijP8ZhcTnWy0nHQJiFqNrUqU614QszO",
+      "passwordHash": "$2b$10$CbBQdbCP/PL.N/tQNTT2kuiR2uTQbyNRzSV73kzfl.2C7oKcDa71i",
       "postIDs": [
-        "6ea39710-daa3-11e9-b903-938205f47b8c",
-        "9c867520-daa4-11e9-9678-69f4a1c07fc4",
-        "a3cc2eb0-daa4-11e9-9678-69f4a1c07fc4"
+        "76e5f160-daa9-11e9-9f3d-5f44fbab2bd4"
       ],
       "joinTime": 1568609177293
     },
     {
       "username": "bwh",
-      "passwordHash": "$2b$10$T8BrBvj64M1vHc0pLnTGte5thQrG6.j9mvwI5tnJPrIRDYRon9mB6",
+      "passwordHash": "$2b$10$eJbLp0.150mKPta0//UXWO2ScIaHOMDhzuqePZBPp68p58zOYuIFy",
       "name": "Benjamin Hetherington",
-      "postIDs": [],
-      "joinTime": 1568873665269
+      "postIDs": [
+        "411aed50-daaa-11e9-848a-65c7ff9059ee"
+      ],
+      "joinTime": 1568875899494
     }
   ],
   "posts": {
-    "9c867520-daa4-11e9-9678-69f4a1c07fc4": {
+    "76e5f160-daa9-11e9-9f3d-5f44fbab2bd4": {
       "author": "admin",
-      "title": "New Post",
-      "content": "This is the new content of the post.",
-      "id": "9c867520-daa4-11e9-9678-69f4a1c07fc4",
-      "time": 1568873614706
+      "title": "This is a post",
+      "content": "This is content. Maybe.",
+      "id": "76e5f160-daa9-11e9-9f3d-5f44fbab2bd4",
+      "time": 1568875699063
+    },
+    "411aed50-daaa-11e9-848a-65c7ff9059ee": {
+      "author": "bwh",
+      "title": "Sample Post",
+      "content": "This is simply a sample post.",
+      "id": "411aed50-daaa-11e9-848a-65c7ff9059ee",
+      "time": 1568876038310
     }
   }
 }

@@ -13,8 +13,6 @@ class Posts extends Component {
     const postsRes = await fetch(`/api/v1/posts/list`);
     const posts = await postsRes.json();
 
-    console.log("posts", posts);
-
     this.setState({
       posts
     });

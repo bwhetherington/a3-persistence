@@ -12,11 +12,11 @@ const logOut = setUser => async () => {
 const TopBar = ({ isAuthenticated, setUser }) =>
   isAuthenticated ? (
     <Navbar bg="light">
-      <Navbar.Brand href="/">Forum</Navbar.Brand>
+      <Navbar.Brand href="/">Posts</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Nav className="mr-auto">
-        <Nav.Link href="/">Home</Nav.Link>
-        <Nav.Link href="/list">List</Nav.Link>
+        <Nav.Link href="/new">Write Post</Nav.Link>
+        <Nav.Link href="/users">Users</Nav.Link>
       </Nav>
       <Nav>
         <Nav.Link onClick={logOut(setUser)}>Logout</Nav.Link>
@@ -24,11 +24,11 @@ const TopBar = ({ isAuthenticated, setUser }) =>
     </Navbar>
   ) : (
     <Navbar bg="light">
-      <Navbar.Brand href="/">Forum</Navbar.Brand>
+      <Navbar.Brand href="/">Posts</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Nav className="mr-auto">
-        <Nav.Link href="/">Home</Nav.Link>
-        <Nav.Link href="/list">List</Nav.Link>
+        <Nav.Link href="/new">Write Post</Nav.Link>
+        <Nav.Link href="/users">Users</Nav.Link>
       </Nav>
       <Nav>
         <Nav.Link href="/login">Login</Nav.Link>

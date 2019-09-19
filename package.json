@@ -8,7 +8,8 @@
     "wipe-state": "rm data/db.json",
     "build": "parcel build client/index.html",
     "watch": "parcel watch client/index.html",
-    "start": "node server/loader.js",
+    "start": "sh glitch-start.sh",
+    "dev": "node server/loader.js",
     "clean": "rm -f dist/*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -39,6 +40,7 @@
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "formik": "^1.5.8",
+    "helmet": "^3.21.0",
     "lowdb": "^1.0.0",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",

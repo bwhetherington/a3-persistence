@@ -40,6 +40,7 @@ class UserProfilePage extends Component {
         <p>This user has not made any posts.</p>
       );
     if (user) {
+      console.log(user);
       return (
         <React.Fragment>
           <h1>{user.name}</h1>

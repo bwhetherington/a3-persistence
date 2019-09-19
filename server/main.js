@@ -8,6 +8,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import api from "./api";
 import { ensureLoggedIn, comparePassword } from "./util";
 import morgan from "morgan";
+import helmet from "helmet";
 
 const AUTH_ERROR_MESSAGE = "Username or password was incorrect.";
 
@@ -20,7 +21,7 @@ const main = async () => {
       .get("users")
       .find(user => user.username === username)
       .value();
-    if (await comparePassword(password, user.passwordHash)) {
+    if (user && (await comparePassword(password, user.passwordHash))) {
       done(null, user);
     } else {
       done(null, null, { message: AUTH_ERROR_MESSAGE });
@@ -44,9 +45,12 @@ const main = async () => {
   });
 
   app.use(morgan("tiny"));
+  app.use(helmet());
   app.use(express.static("dist"));
   app.use(bodyParser.json());
-  app.use(session({ secret: "Secret" }));
+  app.use(
+    session({ secret: "Secret", resave: false, saveUninitialized: false })
+  );
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -85,7 +89,7 @@ const main = async () => {
     res.sendFile(path.join(__dirname, "..", "dist", "index.html"));
   });
 
-  app.listen(3000);
+  app.listen(process.env.PORT || 3000);
 };
 
 main().catch(console.log);

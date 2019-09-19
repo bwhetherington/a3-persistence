@@ -9,18 +9,21 @@ import uuidv1 from "uuid/v1";
  * @param user The user to view
  */
 const getSafeView = user => {
-  const { username, name, postIDs } = user;
-  return { username, name, postIDs };
+  const { username, name, postIDs, joinTime } = user;
+  return { username, name, postIDs, joinTime };
 };
 
+/**
+ * Produces a view of the specified post that determines whether ot not the
+ * requesting user is the author of the post.
+ * @param user The requesting user
+ * @param post The post to view
+ */
 const getPostView = (user, post) => {
   if (user) {
     const { username } = user;
     const { author } = post;
-    console.log("username", username);
-    console.log("author", author);
     const isOwnPost = username === author;
-    console.log(isOwnPost);
     return { isOwnPost, ...post };
   } else {
     return { isOwnPost: false, ...post };
@@ -30,6 +33,10 @@ const getPostView = (user, post) => {
 const api = db => {
   const router = express.Router();
 
+  /**
+   * Returns the currently active user to the specified client if the client is
+   * logged in to the server.
+   */
   router.get("/active-user", (req, res) => {
     if (req.isAuthenticated()) {
       const { user } = req;
@@ -39,10 +46,26 @@ const api = db => {
     }
   });
 
+  const BANNED_USERNAMES = ["admin", "list"];
+
+  /**
+   * POST /users/new
+   *
+   * Creates a new user with the specified fields.
+   *
+   * Body:
+   *   username = The username of the new user
+   *   name = The name of the new user
+   *   password = The password of the new user
+   */
   router.post(
     "/users/new",
     async (req, res, next) => {
       const { username, name, password } = req.body;
+
+      if (BANNED_USERNAMES.indexOf(username) > 0) {
+        res.status(500).json({ message: "That username is not available." });
+      }
 
       const joinTime = Date.now();
 
@@ -53,7 +76,7 @@ const api = db => {
         .value();
 
       if (existing) {
-        res.status(500).json({ message: "That username is already in use." });
+        res.status(500).json({ message: "That username is not available." });
       } else {
         // Encrypt password
         const passwordHash = await hashPassword(password);
@@ -79,6 +102,25 @@ const api = db => {
     })
   );
 
+  /**
+   * GET /users/list
+   *
+   * Returns a list of all users to the
+   */
+  router.get("/users/list", async (_, res) => {
+    const users = await db
+      .get("users")
+      .map(getSafeView)
+      .value();
+    res.send(users);
+  });
+
+  /**
+   * GET /users/:username
+   *
+   * Returns a safe view of the user with the specified username to the
+   * response.
+   */
   router.get("/users/:username", async (req, res) => {
     const findName = req.params.username;
     const user = await db
@@ -93,6 +135,12 @@ const api = db => {
     }
   });
 
+  /**
+   * GET /users/:username/posts
+   *
+   * Returns all posts made by the author with the specified username to the
+   * response.
+   */
   router.get("/users/:username/posts", async (req, res) => {
     const { user, params } = req;
     const { username } = params;
@@ -104,6 +152,11 @@ const api = db => {
     res.json(posts);
   });
 
+  /**
+   * GET /posts/list
+   *
+   * Returns the list of all posts to the response.
+   */
   router.get("/posts/list", async (req, res) => {
     const { user } = req;
     const posts = await db
@@ -114,21 +167,11 @@ const api = db => {
     res.json(posts);
   });
 
-  router.get("/posts/", async (req, res) => {
-    const { user } = req.body;
-    if (user) {
-      const posts = await db
-        .get("posts")
-        .filter(post => post.author === user)
-        .map(post => getPostView(user, post))
-        .value();
-      res.json(posts);
-    } else {
-      res.status(404);
-      res.json({ message: "No user specified." });
-    }
-  });
-
+  /**
+   * GET /posts/:id
+   *
+   * Returns the post with the specified ID to the response.
+   */
   router.get("/posts/:id", async (req, res) => {
     const { user, params } = req;
     const { id } = params;
@@ -144,6 +187,10 @@ const api = db => {
     }
   });
 
+  /**
+   * Checks whether or not the user is authenticated. If they are not
+   * authenticated, they receive a 401 error.
+   */
   const ensureOwnPost = async (req, res, next) => {
     console.log(req.body);
 
@@ -179,15 +226,33 @@ const api = db => {
     }
   };
 
+  /**
+   * POST /posts/delete
+   *
+   * Deletes the post with the specified ID and returns the user to the list of
+   * other posts.
+   *
+   * Body:
+   *   id = The ID of the post to delete
+   */
   router.post("/posts/delete", ensureOwnPost, async (req, res) => {
     const { id } = req.body;
     await db
       .get("posts")
       .unset(id)
       .write();
-    res.redirect("/list");
+    res.redirect("/");
   });
 
+  /**
+   * POST /posts/edit
+   *
+   * Edits a specified post.
+   *
+   * Body:
+   *   id = The post id
+   *   content = The new content of the post
+   */
   router.post("/posts/edit", ensureOwnPost, async (req, res) => {
     const { id, content } = req.body;
     await db
@@ -195,9 +260,18 @@ const api = db => {
       .get(id)
       .assign({ content })
       .write();
-    res.redirect("/list");
+    res.redirect("/");
   });
 
+  /**
+   * POST /posts/new
+   *
+   * Publishes the specified post.
+   *
+   * Body:
+   *   title = The title of the post
+   *   content = The content of the post
+   */
   router.post("/posts/new", ensureLoggedIn("/login"), async (req, res) => {
     const { user } = req;
     const { title, content } = req.body;
@@ -227,12 +301,7 @@ const api = db => {
       .push(postID)
       .write();
 
-    res.redirect("/list");
-  });
-
-  router.get("/users", ensureLoggedIn("/unauthorized"), async (req, res) => {
-    const users = await db.get("users").value();
-    res.send(users);
+    res.redirect("/");
   });
 
   return router;

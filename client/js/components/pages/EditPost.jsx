@@ -23,9 +23,6 @@ class EditPostPage extends Component {
     const { post } = this.state;
     const { isAuthenticated, user } = this.props;
     if (post) {
-      if (user) {
-        console.log(user.username, post);
-      }
       if (isAuthenticated && user.username === post.author) {
         return (
           <React.Fragment>

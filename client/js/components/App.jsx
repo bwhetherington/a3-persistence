@@ -14,8 +14,9 @@ import { post } from "../util";
 import UserProfile from "./pages/UserProfile";
 import List from "./pages/List";
 import EditPost from "./pages/EditPost";
+import Users from "./pages/Users";
 
-const HomePage = ({ isAuthenticated, user }) => {
+const NewPostPage = ({ isAuthenticated, user }) => {
   if (isAuthenticated) {
     return (
       <div>
@@ -34,7 +35,7 @@ const HomePage = ({ isAuthenticated, user }) => {
   }
 };
 
-const Home = _ => <Page title="Home" component={HomePage} />;
+const NewPost = _ => <Page title="Home" component={NewPostPage} />;
 
 const NotFoundPage = _ => (
   <div>
@@ -65,8 +66,9 @@ const renderUserAbbreviation = props => (
 const App = _ => (
   <Router>
     <Switch>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/list" component={List} />
+      <Route exact path="/" component={List} />
+      <Route exact path="/users" component={Users} />
+      <Route exact path="/new" component={NewPost} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/register" component={Register} />
       <Route exact path="/unauthorized" component={Unauthorized} />

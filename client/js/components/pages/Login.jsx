@@ -9,13 +9,8 @@ import Page from "../Page";
 import { Link } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 
-const onLogin = setUser => async data => {
-  const res = await request("POST", "/auth", data);
-  if (res.ok) {
-    const { user } = await request("GET", "/api/v1/active-user");
-    setUser(user);
-  }
-  console.log(res);
+const onLogin = async data => {
+  await request("POST", "/auth", data);
 };
 
 const schema = yup.object().shape({
@@ -23,13 +18,13 @@ const schema = yup.object().shape({
   password: yup.string().required("Password required.")
 });
 
-const LoginForm = ({ setUser }) => (
+const LoginForm = props => (
   <React.Fragment>
     <h1>Login</h1>
     <Container>
       <Formik
         validationSchema={schema}
-        onSubmit={onLogin(setUser)}
+        onSubmit={onLogin}
         initialValues={{ username: "", password: "" }}
       >
         {({ handleSubmit, handleChange, handleReset, values, errors }) => (
