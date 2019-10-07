@@ -1,5 +1,7 @@
 # Assignment 5: Basic Forum With a Database
 
+[Link](a5-bwhetherington.herokuapp.com).
+
 This project is largely the same as my third project, and, from the user's perspective, behaves exactly the same. The key difference, however, is that instead of using `lowdb`, this project now uses `mongodb`. Specifically, it uses MongoDB Atlas, so the database is hosted in the cloud.
 
 While getting to understand working with MongoDB, I found it fairly simple, but there is one key feature in particular that I am unsure of. It provides a `findOneAndUpdate` method to find a document in the database and update, all in one atomic operation. However, I am unsure of how to update it based on the previous state of the document. The specific context that I needed this for was that in my previous project, each user also stored a list of the posts they had created. My reasoning for this was that, since posts were indexed by the IDs, this list of post IDs could be used to quickly find which posts were created by any given user. In hindsight, that may not have been a particularly helpful choice. In this version, it simply queries for posts with a specific author. I feel that is a much simpler and more elegant way to do it, and that I may have been overcomplicating it before.
