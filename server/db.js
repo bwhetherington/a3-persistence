@@ -28,12 +28,6 @@ export const initDB = async () => {
   return client;
 };
 
-export const getUrl = async () => {
-  let file = await readFile("../mongodb-url.txt", "utf-8");
-  console.log(file.trim());
-  return file.trim();
-}
-
 let connection = null;
 
 const MONGO_SETTINGS = {
@@ -45,7 +39,11 @@ export const getConnection = async () => {
   if (connection) {
     return connection;
   } else {
-    const url = (await readFile("../mongodb-url.txt", "utf-8")).trim();
+    const url = process.env.MONGO_URL;
+    if (!url) {
+      console.log("No MongoDB url specified in environment variables.");
+      process.exit(1);
+    }
     const client = await MongoClient.connect(url, MONGO_SETTINGS);
     connection = client;
     return client;
