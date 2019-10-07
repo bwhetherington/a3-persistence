@@ -1,6 +1,6 @@
 # Assignment 5: Basic Forum With a Database
 
-[Link](a5-bwhetherington.herokuapp.com).
+[Link](http://a5-bwhetherington.herokuapp.com).
 
 This project is largely the same as my third project, and, from the user's perspective, behaves exactly the same. The key difference, however, is that instead of using `lowdb`, this project now uses `mongodb`. Specifically, it uses MongoDB Atlas, so the database is hosted in the cloud.
 
