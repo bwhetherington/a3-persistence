@@ -70,10 +70,7 @@ const api = db => {
       const joinTime = Date.now();
 
       // Check if we already have this user
-      const existing = await db
-        .get("users")
-        .find(user => user.username === username)
-        .value();
+      const existing = await db.collection("users").findOne({ username });
 
       if (existing) {
         res.status(500).json({ message: "That username is not available." });
@@ -87,11 +84,7 @@ const api = db => {
           postIDs: [],
           joinTime
         };
-        await db
-          .get("users")
-          .push(newUser)
-          .write();
-        // Log the user in?
+        await db.collection("users").insertOne(newUser);
         next();
       }
     },
@@ -108,10 +101,7 @@ const api = db => {
    * Returns a list of all users to the
    */
   router.get("/users/list", async (_, res) => {
-    const users = await db
-      .get("users")
-      .map(getSafeView)
-      .value();
+    const users = await db.collection("users").find();
     res.send(users);
   });
 
@@ -122,11 +112,8 @@ const api = db => {
    * response.
    */
   router.get("/users/:username", async (req, res) => {
-    const findName = req.params.username;
-    const user = await db
-      .get("users")
-      .find(user => user.username === findName)
-      .value();
+    const { username } = req.params;
+    const user = await db.collection("users").findOne({ username });
     if (user) {
       res.json(getSafeView(user));
     } else {
@@ -144,12 +131,9 @@ const api = db => {
   router.get("/users/:username/posts", async (req, res) => {
     const { user, params } = req;
     const { username } = params;
-    const posts = await db
-      .get("posts")
-      .filter(post => post.author === username)
-      .map(post => getPostView(user, post))
-      .value();
-    res.json(posts);
+    const posts = await db.collection("posts").find({ author: username }).toArray();
+    const mapped = posts.map(post => getPostView(user, post));
+    res.json(mapped);
   });
 
   /**
@@ -159,12 +143,9 @@ const api = db => {
    */
   router.get("/posts/list", async (req, res) => {
     const { user } = req;
-    const posts = await db
-      .get("posts")
-      .filter(_ => true)
-      .map(post => getPostView(user, post))
-      .value();
-    res.json(posts);
+    const posts = await db.collection("posts").find({}).toArray();
+    const mapped = posts.map(post => getPostView(user, post));
+    res.json(mapped);
   });
 
   /**
@@ -175,10 +156,7 @@ const api = db => {
   router.get("/posts/:id", async (req, res) => {
     const { user, params } = req;
     const { id } = params;
-    const post = await db
-      .get("posts")
-      .get(id)
-      .value();
+    const post = await db.collection("posts").findOne({ id });
     if (post) {
       res.json(getPostView(user, post));
     } else {
@@ -202,10 +180,7 @@ const api = db => {
     const { id } = req.body;
 
     // Look up the post
-    const post = await db
-      .get("posts")
-      .get(id)
-      .value();
+    const post = await db.collection("posts").findOne({ id });
 
     if (post) {
       // Check if the request is from the author of the post
@@ -237,10 +212,7 @@ const api = db => {
    */
   router.post("/posts/delete", ensureOwnPost, async (req, res) => {
     const { id } = req.body;
-    await db
-      .get("posts")
-      .unset(id)
-      .write();
+    await db.collection("posts").findOneAndDelete({ id });
     res.redirect("/");
   });
 
@@ -255,11 +227,12 @@ const api = db => {
    */
   router.post("/posts/edit", ensureOwnPost, async (req, res) => {
     const { id, content } = req.body;
-    await db
-      .get("posts")
-      .get(id)
-      .assign({ content })
-      .write();
+
+    const existingPost = db.collection("posts").findOne({ id });
+    const newPost = { ...existingPost, content };
+
+    await db.collection("posts").findOneAndUpdate({ id }, { $set: newPost });
+
     res.redirect("/");
   });
 
@@ -288,18 +261,7 @@ const api = db => {
     };
 
     // Add to the set of posts
-    await db
-      .get("posts")
-      .assign({ [postID]: post })
-      .write();
-
-    // Add to the user's list of posts
-    await db
-      .get("users")
-      .find(found => found.username === user.username)
-      .get("postIDs")
-      .push(postID)
-      .write();
+    await db.collection("posts").insertOne(post);
 
     res.redirect("/");
   });

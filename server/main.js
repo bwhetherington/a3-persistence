@@ -13,14 +13,14 @@ import helmet from "helmet";
 const AUTH_ERROR_MESSAGE = "Username or password was incorrect.";
 
 const main = async () => {
+  const client = await initDB();
+  const db = client.db("a3persistence");
+
   const app = express();
-  const db = await initDB();
 
   const strategy = new LocalStrategy(async (username, password, done) => {
-    const user = await db
-      .get("users")
-      .find(user => user.username === username)
-      .value();
+    const user = await db.collection("users")
+      .findOne({ username });
     if (user && (await comparePassword(password, user.passwordHash))) {
       done(null, user);
     } else {
@@ -33,10 +33,7 @@ const main = async () => {
     done(null, user.username);
   });
   passport.deserializeUser(async (username, done) => {
-    const user = await db
-      .get("users")
-      .find(user => user.username === username)
-      .value();
+    const user = await db.collection("users").findOne({ username });
     if (user) {
       done(null, user);
     } else {
@@ -89,7 +86,9 @@ const main = async () => {
     res.sendFile(path.join(__dirname, "..", "dist", "index.html"));
   });
 
-  app.listen(process.env.PORT || 3000);
+  app.listen(process.env.PORT || 3333);
+
+  client.close();
 };
 
 main().catch(console.log);
